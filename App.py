@@ -1,4 +1,5 @@
-from flask import Flask #importacion flask servidor
+#importacion flask servidor y el render para las plantillas html
+from flask import Flask, render_template
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -13,7 +14,7 @@ mysql = MySQL(app)
 #ruta principal
 @app.route('/')
 def Index():
- return'Hello World'
+ return render_template('index.html')
 #ruta add contacto
 @app.route('/add_contact')
 def add_contact():
