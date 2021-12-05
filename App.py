@@ -1,5 +1,6 @@
 #importacion flask servidor y el render para las plantillas html
-from flask import Flask, render_template
+#request para solicitar
+from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -15,10 +16,18 @@ mysql = MySQL(app)
 @app.route('/')
 def Index():
  return render_template('index.html')
+
 #ruta add contacto
-@app.route('/add_contact')
+@app.route('/add_contact', methods=['POST'])
 def add_contact():
- return'Ad Contact'
+ if request.method == 'POST':
+  fullname=request.form['fullname']
+  phone=request.form['phone']
+  email=request.form['email']
+  print(fullname)
+  print(phone)
+  print(email)
+  return 'received'
 
 @app.route('/edit')
 def edit_contact():
