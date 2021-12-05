@@ -1,6 +1,14 @@
-from flask import Flask
+from flask import Flask #importacion flask servidor
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'vmedina'
+app.config['MYSQL_PASSWORD'] = '123456'
+app.config['MYSQL_HOST'] = 'flaskcontacts'
+
+mysql = MySQL(app)
 
 #ruta principal
 @app.route('/')
