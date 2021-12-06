@@ -1,6 +1,8 @@
 #importacion flask servidor y el render para las plantillas html
 #request para solicitar
-from flask import Flask, render_template, request
+#redirect para deireccionar y url_for para asignar
+#flash para mensajes entre vistas
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -8,7 +10,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'vmedina'
 app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_HOST'] = 'flaskcontacts'
+app.config['MYSQL_DB'] = 'flaskcontacts'
 
 mysql = MySQL(app)
 
@@ -20,14 +22,20 @@ def Index():
 #ruta add contacto
 @app.route('/add_contact', methods=['POST'])
 def add_contact():
+    #captura de datos
  if request.method == 'POST':
   fullname=request.form['fullname']
   phone=request.form['phone']
   email=request.form['email']
-  print(fullname)
-  print(phone)
-  print(email)
-  return 'received'
+
+  #conexion sql
+  cur=mysql.connection.cursor()
+  cur.execute('INSERT INTO contacts (fullname, phone, email) VALUES (%s, %s, %s)', (fullname, phone, email))
+  mysql.connection.commit()
+  #mensaje
+  flash('Contacto added successflully')
+  ##redirecciona al index
+  return redirect(url_for('Index'))
 
 @app.route('/edit')
 def edit_contact():
