@@ -7,12 +7,17 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
+#mysql connection
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'vmedina'
 app.config['MYSQL_PASSWORD'] = '123456'
 app.config['MYSQL_DB'] = 'flaskcontacts'
 
 mysql = MySQL(app)
+
+#settings sessions
+app.secret_key='mysecretkey'
+
 
 #ruta principal
 @app.route('/')
@@ -28,7 +33,7 @@ def add_contact():
   phone=request.form['phone']
   email=request.form['email']
 
-  #conexion sql
+  #conexion sql insertar dato
   cur=mysql.connection.cursor()
   cur.execute('INSERT INTO contacts (fullname, phone, email) VALUES (%s, %s, %s)', (fullname, phone, email))
   mysql.connection.commit()
