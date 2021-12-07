@@ -22,7 +22,7 @@ app.secret_key='mysecretkey'
 #ruta principal
 @app.route('/')
 def Index():
-  
+
  #conexion base de datos almacenamiento de la tabla contact
  cur=mysql.connection.cursor()
  cur.execute('SELECT*FROM contacts')
@@ -52,9 +52,16 @@ def add_contact():
 def edit_contact():
  return 'edit contact'
 
-@app.route('/delete')
-def delete_contact():
- return 'delete'
+##ruta para borrar
+@app.route('/delete/<string:id>')
+def delete_contact(id):
+
+ cur=mysql.connection.cursor()
+ cur.execute('DELETE FROM contacts WHERE id = {0}'. format(id))
+ mysql.connection.commit()
+ flash('Contact Removed Successfully')
+
+ return redirect(url_for('Index'))
 
 if __name__ == '__main__':
 ##uso debug para que cada vez que se haga cambio el servidor renicie
