@@ -22,7 +22,13 @@ app.secret_key='mysecretkey'
 #ruta principal
 @app.route('/')
 def Index():
- return render_template('index.html')
+  
+ #conexion base de datos almacenamiento de la tabla contact
+ cur=mysql.connection.cursor()
+ cur.execute('SELECT*FROM contacts')
+ data=cur.fetchall()
+
+ return render_template('index.html', contacts=data)
 
 #ruta add contacto
 @app.route('/add_contact', methods=['POST'])
