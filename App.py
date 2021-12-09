@@ -2,6 +2,7 @@
 #request para solicitar
 #redirect para deireccionar y url_for para asignar
 #flash para mensajes entre vistas
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 
@@ -48,9 +49,37 @@ def add_contact():
   ##redirecciona al index
   return redirect(url_for('Index'))
 
-@app.route('/edit')
-def edit_contact():
- return 'edit contact'
+@app.route('/edit/<id>')
+def edit_contact(id):
+
+ cur = mysql.connection.cursor()
+ #colcoamos el ide obtenido de la plantilla en la consulta sql
+ cur.execute('SELECT*FROM contacts WHERE id=%s', (id))
+ data=cur.fetchall()
+ #indice 0 del array
+ return render_template('edit-contact.html', contact=data[0])
+
+@app.route('/update/<id>', methods=['POST'])
+def update_contact(id):
+
+ if request.method=='POST':
+  fullname=request.form['fullname']
+  phone=request.form['phone']
+  email=request.form['email']
+
+  cur=mysql.connection.cursor()
+  cur.execute("""
+  UPDATE contacts
+  SET  fullname=%s,
+        email=%s,
+        phone=%s
+  WHERE id = %s    
+  """, (fullname, phone, email, id))
+  mysql.connection.commit()
+
+  flash('Contact Updated Succesfuly')
+  return redirect(url_for('Index'))
+
 
 ##ruta para borrar
 @app.route('/delete/<string:id>')
